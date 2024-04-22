@@ -3,8 +3,12 @@ import { v4 as uuidv4 } from 'uuid'
 
 const initializeSocket = (server) => {
   const io = new Server(server, {
-    cors: {
+    /* cors: {
       origin: 'https://bookish-meme-97xxp76r44gcxq4r-5173.app.github.dev', // Modifier en fonction de votre configuration frontend
+      methods: ['GET', 'POST'],
+    }, */
+    cors: {
+      origin: 'http://localhost:5173', // Modifier en fonction de votre configuration frontend
       methods: ['GET', 'POST'],
     },
   })

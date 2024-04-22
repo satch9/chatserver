@@ -1,8 +1,8 @@
-import { Outlet, useNavigate } from 'react-router-dom'
+import { Link, Outlet, useNavigate } from 'react-router-dom'
 import { ClerkProvider, SignedIn, SignedOut, UserButton, SignInButton } from '@clerk/clerk-react'
 
 import { Layout } from 'antd'
-import Chat from '../components/Chat'
+import Chat from '../components/chat/Chat'
 
 const { Header, Content, Footer, Sider } = Layout
 
@@ -19,7 +19,7 @@ export default function RootLayout() {
         <ClerkProvider navigate={navigate} publishableKey={PUBLISHABLE_KEY}>
             <Layout>
                 <Header className="header">
-                    <div style={{ color: "white" }}>La Bataille</div>
+                    <Link to="/"><div style={{ color: "white" }}>La Bataille</div></Link>
                     <SignedIn >
                         <UserButton afterSignOutUrl='/' />
                     </SignedIn>
