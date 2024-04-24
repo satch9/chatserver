@@ -1,17 +1,19 @@
 import { Col, Layout } from "antd"
-import { useState, useRef, useEffect, useContext } from "react"
+import {  useEffect, useContext } from "react"
 import ChatControl from "./chat-control/ChatControl"
 import ChatMessage from "./chat-message/ChatMessage"
 import { useAuth } from "@clerk/clerk-react"
 import { SocketContext } from '../../context/socketContext'
+import { useChat } from "../../hooks/useChat"
 
 const { Content } = Layout
 
 const Chat = () => {
     
-    const scroll = useRef(null)
+    
     const { isSignedIn } = useAuth()
     const socket = useContext(SocketContext)
+    const { messages, setMessages } = useChat()
 
     useEffect(() => {
 
@@ -25,7 +27,7 @@ const Chat = () => {
         return () => {
             socket.off("new message", handleNewMessage)
         }
-    }, [socket])
+    }, [socket, setMessages])
 
     return (
         <>
@@ -33,7 +35,7 @@ const Chat = () => {
                 <Content className="chat-messages">
                     {
                         messages.length !== 0 ? messages.map((message, index) => (
-                            <ChatMessage key={index} message={message} scroll={scroll} />
+                            <ChatMessage key={index} message={message} />
 
                         )) :
                             <p className="chat-messages-no">Pas de messages</p>

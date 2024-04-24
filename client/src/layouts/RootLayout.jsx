@@ -3,6 +3,8 @@ import { ClerkProvider, SignedIn, SignedOut, UserButton, SignInButton } from '@c
 
 import { Layout } from 'antd'
 import Chat from '../components/chat/Chat'
+import { ChatProvider } from '../context/chatContext'
+
 
 const { Header, Content, Footer, Sider } = Layout
 
@@ -31,12 +33,15 @@ export default function RootLayout() {
                 </Header>
 
                 <Content style={{ padding: '20px 50px', width: '800px' }}>
-                    <Layout style={{justifyContent: 'space-between', gap:'10px'}}>
+                    <Layout style={{ justifyContent: 'space-between', gap: '10px' }}>
                         <main>
                             <Outlet />
                         </main>
                         <Sider width="45%" >
-                            <Chat />
+                            <ChatProvider>
+                                <Chat />
+                            </ChatProvider>
+
                         </Sider>
                     </Layout>
                 </Content>

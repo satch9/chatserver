@@ -1,21 +1,21 @@
 import PropTypes from 'prop-types'
-import {  useEffect } from 'react'
+import { useRef, useEffect } from 'react'
 import { useUser } from '@clerk/clerk-react'
 import { Tag, Card, Image } from 'antd'
 import { CalendarOutlined } from "@ant-design/icons"
 
 
 // Composant de chat message
-const ChatMessage = ({ message, index, scroll }) => {
-    
+const ChatMessage = ({ message, index }) => {
+
     const { user } = useUser()
-   
+    const scroll = useRef(null)
 
 
     useEffect(() => {
         // 👇️ scroll to bottom every time messages change
         scroll.current?.scrollIntoView({ behavior: 'smooth' })
-    }, [message, scroll])
+    }, [message])
 
     return (
         <>
@@ -33,7 +33,7 @@ const ChatMessage = ({ message, index, scroll }) => {
                 className="chat-message-card-from"
             >
                 <div key={index} className="message" ref={scroll}>
-                    <div style={{ display: "inline", height: "60px"}}>
+                    <div style={{ display: "inline", height: "60px" }}>
                         <Image
                             preview={false}
                             src={user.imageUrl}
@@ -64,7 +64,6 @@ const ChatMessage = ({ message, index, scroll }) => {
 ChatMessage.propTypes = {
     message: PropTypes.string.isRequired, // Validation du type et de l'obligatorité de la prop 'message'
     index: PropTypes.number, // Validation du type et de l'obligatorité de la prop 'index'
-    scroll: PropTypes.object.isRequired, // Validation du type et de l'obligatorité de la prop 'scroll'
 };
 
 export default ChatMessage
