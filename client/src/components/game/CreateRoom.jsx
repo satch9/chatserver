@@ -2,13 +2,15 @@ import { Form, Input, Select, Button, message } from "antd"
 import { useCallback, useEffect, useContext } from 'react'
 import { useUser } from '@clerk/clerk-react'
 import { SocketContext } from '../../context/socketContext.js';
+//import { useChat } from "../../hooks/useChat.js";
 
 
-const CreateRoom = ({messages, setMessages}) => {
+const CreateRoom = () => {
     const [form] = Form.useForm()
     const [messageApi, contextHolder] = message.useMessage()
     const { user } = useUser()
     const socket = useContext(SocketContext)
+    //const { messages, setMessages } = useChat()
 
     const info = useCallback((text) => {
         messageApi.info(text);

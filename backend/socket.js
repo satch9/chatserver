@@ -81,7 +81,7 @@ const initializeSocket = (server) => {
     socket.on('new message', ({ username, message }) => {
       //console.log('username, message [new message]', username, message)
       // we tell the client to execute 'new message'
-      socket.broadcast.emit('new message', {
+      io.emit('new message', {
         username: username,
         message: message,
       })
@@ -89,18 +89,25 @@ const initializeSocket = (server) => {
 
     // when the clients emits 'add user', this listens and executes
     socket.on('add user', (username) => {
+      console.log('addedUser', addedUser)
       if (addedUser) return
 
+      console.log('add user')
+      console.log('')
       // we store the username in the socket session for this client
       socket.username = username
       numUsers++
       addedUser = true
-      socket.emit('login', { numUsers })
+      //socket.emit('login', { numUsers, username: socket.username })
       // echo globally (all clients) that a person has connected
       socket.broadcast.emit('user joined', {
         username: socket.username,
         numUsers,
       })
+    })
+
+    socket.on('create room', (values)=>{
+      console.log('Creating a new room...', values)
     })
 
     socket.on('joinGame', () => {

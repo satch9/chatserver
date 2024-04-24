@@ -2,7 +2,7 @@ import { Card, Typography, Button } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useAuth, useUser } from "@clerk/clerk-react";
 import { SocketContext } from "../context/socketContext";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 
 const { Paragraph } = Typography;
 
@@ -21,10 +21,22 @@ const content = (
 export default function IndexPage() {
     const navigate = useNavigate();
     const { isSignedIn } = useAuth();
-    const {user} = useUser()
+    const { user } = useUser()
     const socket = useContext(SocketContext)
 
-    console.log("isSignedIn ", isSignedIn)
+    useEffect(() => {
+        if (isSignedIn) {
+            const handleUserJoined = (data) => {
+                const message = `Bienvenue à ${data.username} sur le serveur du jeu`
+                socket.emit("new message", { username: "I-ROBOT", message })
+            }
+            socket.on("user joined", handleUserJoined)
+
+            return () => {
+                socket.off("user joined", handleUserJoined);
+            };
+        }
+    }, [isSignedIn, socket])
 
     const handleEnter = () => {
         socket.emit("add user", user.username)

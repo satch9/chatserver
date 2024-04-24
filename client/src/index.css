@@ -114,15 +114,20 @@ body {
   background-color: #292C7A; /* choix couleur #4465C1 #0E102A*/
   border-radius: 5px;
   padding: 5px;
-  width: 60%;
-  text-align: left;
+  width: 80%;
+  font-size: 12px;
+  line-height: 1.2em;
+  text-align: justify;
+  height: fit-content;
 }
 
 .chat-message-card-from-horaire {
   font-style: oblique;
-  font-size: 12px;
+  font-size: 9px;
   text-align: end;
-  height: 5px;
+  padding: 0;
+  margin: 0;
+  line-height: .8em;
 }
 
 .chat-control {

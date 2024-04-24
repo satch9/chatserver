@@ -3,10 +3,10 @@ import { useRef, useEffect } from 'react'
 import { useUser } from '@clerk/clerk-react'
 import { Tag, Card, Image } from 'antd'
 import { CalendarOutlined } from "@ant-design/icons"
-
+import robot from "../../../../assets/robot.png"
 
 // Composant de chat message
-const ChatMessage = ({ message, index }) => {
+const ChatMessage = ({ message }) => {
 
     const { user } = useUser()
     const scroll = useRef(null)
@@ -16,6 +16,11 @@ const ChatMessage = ({ message, index }) => {
         // 👇️ scroll to bottom every time messages change
         scroll.current?.scrollIntoView({ behavior: 'smooth' })
     }, [message])
+
+    // Vérifie si message est défini
+    if (!message) {
+        return null; // Retourne null si message est undefined
+    }
 
     return (
         <>
@@ -32,11 +37,11 @@ const ChatMessage = ({ message, index }) => {
                 bordered={false}
                 className="chat-message-card-from"
             >
-                <div key={index} className="message" ref={scroll}>
+                <div className="message" ref={scroll}>
                     <div style={{ display: "inline", height: "60px" }}>
                         <Image
                             preview={false}
-                            src={user.imageUrl}
+                            src={user ? user.imageUrl : robot}
                             width={30}
                             height={30}
                             style={{ borderRadius: "50%", verticalAlign: "baseLine" }}
@@ -63,7 +68,6 @@ const ChatMessage = ({ message, index }) => {
 
 ChatMessage.propTypes = {
     message: PropTypes.string.isRequired, // Validation du type et de l'obligatorité de la prop 'message'
-    index: PropTypes.number, // Validation du type et de l'obligatorité de la prop 'index'
 };
 
 export default ChatMessage

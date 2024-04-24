@@ -4,6 +4,8 @@ import { SocketContext } from '../../context/socketContext.js';
 import RoomList from './RoomList';
 import CreateRoom from './CreateRoom';
 import ScoreBoard from './ScoreBoard';
+import { useChat } from "../../hooks/useChat.js";
+
 
 const tabListNoTitle = [
   {
@@ -23,7 +25,7 @@ const tabListNoTitle = [
 const Parameters = () => {
   const [activeTabKey, setActiveTabKey] = useState("jeuxDispo")
   const [roomList, setRoomList] = useState([])
-  const [messages, setMessages] = useState([])
+  const { addMessage } = useChat()
 
   const players = [
     {
@@ -38,8 +40,6 @@ const Parameters = () => {
 
   const socket = useContext(SocketContext)
 
-  
-
   useEffect(() => {
     //console.log("socket [Parameters]", socket)
     const handleGetAllRooms = (data) => {
@@ -50,25 +50,26 @@ const Parameters = () => {
 
     const handleNewMessage = (data) => {
       console.log(`${data.username} a écrit ${data.message}`)
-      setMessages(prevMessages => [...prevMessages, data.message])
+      addMessage(data)
     }
 
     socket.on("new message", handleNewMessage)
 
-    const handleLogin = (data) => {
-      const message = "Bienvenue sur le serveur du jeu"
-
+    const handleUserJoined = (data) => {
+      const message = `Bienvenu à ${data.username} sur le serveur du jeu`
+      //console.log("data [handleUserJoined]",data)
       socket.emit("new message", { username: "I-ROBOT", message })
-      console.log("numUsers", data.numUsers)
+      //console.log("numUsers", data.numUsers)
 
     }
-    socket.on("login", handleLogin)
+    socket.on("user joined", handleUserJoined)
 
     return () => {
       socket.off("get all rooms", handleGetAllRooms);
-      socket.off("login", handleLogin);
+      socket.off("user joined", handleUserJoined);
+      socket.off("new message", handleNewMessage)
     };
-  }, [socket])
+  }, [addMessage, socket])
 
   const onTab2Change = (key) => {
     setActiveTabKey(key);
@@ -76,7 +77,7 @@ const Parameters = () => {
 
   const contentListNoTitle = {
     jeuxDispo: <RoomList rooms={roomList} />,
-    creerJeux: <CreateRoom messages={messages} setMessages={setMessages} />,
+    creerJeux: <CreateRoom />,
     tableauScore: <ScoreBoard players={players} />,
   };
 

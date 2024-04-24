@@ -1,13 +1,14 @@
 import { useState, useContext } from 'react'
 import { RightCircleTwoTone } from '@ant-design/icons'
-import PropTypes from 'prop-types'
 import { SocketContext } from '../../../context/socketContext'
 import { useUser } from '@clerk/clerk-react'
+//import { useChat } from '../../../hooks/useChat'
 
 
-const ChatControl = ({ setMessages, messages }) => {
+const ChatControl = () => {
     const [content, setContent] = useState('')
     const socket = useContext(SocketContext)
+    //const { addMessage  } = useChat()
     const { user } = useUser()
 
 
@@ -17,17 +18,14 @@ const ChatControl = ({ setMessages, messages }) => {
     }
 
     const handleSubmit = () => {
-
         if (content.trim() !== '') {
-            setMessages([...messages, content])
-            console.log("messages", messages)
+            //addMessage(content)
             socket.emit("new message", { username: user.username, message: content })
             setContent('')
         }
     }
     return (
         <div className="chat-control">
-            <div id="scroll" ref={scroll} />
             <form onSubmit={handleSubmit}>
                 <textarea
                     className="inputMessage"
@@ -41,9 +39,5 @@ const ChatControl = ({ setMessages, messages }) => {
     )
 }
 
-ChatControl.propTypes = {
-    setMessages: PropTypes.func.isRequired,
-    messages: PropTypes.array.isRequired,
-}
 
 export default ChatControl

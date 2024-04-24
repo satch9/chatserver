@@ -7,8 +7,12 @@ export const ChatProvider = (props) => {
   const { children } = props
   const [messages, setMessages] = useState([])
 
+  const addMessage = (data) => {
+    setMessages(prevMessages => [...prevMessages, data.message])
+  }
+
   return (
-    <ChatContext.Provider value={{ messages, setMessages }}>
+    <ChatContext.Provider value={{ messages, addMessage }}>
       {children}
     </ChatContext.Provider>
   )

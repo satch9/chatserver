@@ -3,7 +3,7 @@ import { ClerkProvider, SignedIn, SignedOut, UserButton, SignInButton } from '@c
 
 import { Layout } from 'antd'
 import Chat from '../components/chat/Chat'
-import { ChatProvider } from '../context/chatContext'
+
 
 
 const { Header, Content, Footer, Sider } = Layout
@@ -38,9 +38,9 @@ export default function RootLayout() {
                             <Outlet />
                         </main>
                         <Sider width="45%" >
-                            <ChatProvider>
+                            
                                 <Chat />
-                            </ChatProvider>
+                            
 
                         </Sider>
                     </Layout>
