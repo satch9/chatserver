@@ -1,10 +1,10 @@
 import { Form, Input, Select, Button, message } from "antd"
 import { useCallback, useEffect, useContext } from 'react'
 import { useUser } from '@clerk/clerk-react'
-import { SocketContext } from './../src/context/socketContext';
+import { SocketContext } from '../../context/socketContext.js';
 
 
-const CreateRoom = () => {
+const CreateRoom = ({messages, setMessages}) => {
     const [form] = Form.useForm()
     const [messageApi, contextHolder] = message.useMessage()
     const { user } = useUser()

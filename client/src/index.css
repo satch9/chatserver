@@ -93,8 +93,36 @@ body {
 
 .message {
   color: white;
-  font-weight: 400;
+  font-weight: 600;
   padding: 10px 3px;
+  display: flex;
+}
+
+.chat-message-card-from {
+  background: transparent;
+}
+
+.chat-message-card-from .ant-card-body{
+  padding: 0;
+}
+
+.message .ant-image{
+  margin-right: 5px;
+}
+
+.chat-message-card-from-text{
+  background-color: #292C7A; /* choix couleur #4465C1 #0E102A*/
+  border-radius: 5px;
+  padding: 5px;
+  width: 60%;
+  text-align: left;
+}
+
+.chat-message-card-from-horaire {
+  font-style: oblique;
+  font-size: 12px;
+  text-align: end;
+  height: 5px;
 }
 
 .chat-control {

@@ -1,15 +1,31 @@
 import { Col, Layout } from "antd"
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect, useContext } from "react"
 import ChatControl from "./chat-control/ChatControl"
 import ChatMessage from "./chat-message/ChatMessage"
 import { useAuth } from "@clerk/clerk-react"
+import { SocketContext } from '../../context/socketContext'
 
 const { Content } = Layout
 
 const Chat = () => {
-    const [messages, setMessages] = useState([])
+    
     const scroll = useRef(null)
     const { isSignedIn } = useAuth()
+    const socket = useContext(SocketContext)
+
+    useEffect(() => {
+
+        const handleNewMessage = (data) => {
+            console.log(`${data.username} a écrit ${data.message}`)
+            setMessages(prevMessages => [...prevMessages, data.message])
+        }
+
+        socket.on("new message", handleNewMessage)
+
+        return () => {
+            socket.off("new message", handleNewMessage)
+        }
+    }, [socket])
 
     return (
         <>

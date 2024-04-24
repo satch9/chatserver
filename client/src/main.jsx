@@ -4,13 +4,13 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import './index.css'
 import { SocketContext, socket } from './context/socketContext.js'
 
-import RootLayout from '../layouts/RootLayout.jsx'
+import RootLayout from './layouts/RootLayout.jsx'
 
-import SignInPage from '../routes/sign-in';
-import SignUpPage from '../routes/sign-up.jsx'
-import IndexPage from '../routes/index';
-import Parameters from '../components/Parameters.jsx'
-import GameBoard from '../components/GameBoard.jsx'
+import SignInPage from './routes/sign-in.jsx';
+import SignUpPage from './routes/sign-up.jsx'
+import IndexPage from './routes/index.jsx';
+import Parameters from './components/game/Parameters.jsx'
+import GameBoard from './components/game/GameBoard.jsx'
 
 
 ReactDOM.createRoot(document.getElementById('root')).render(

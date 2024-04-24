@@ -1,6 +1,6 @@
 import { Card } from "antd"
 import { useContext, useEffect, useState } from "react";
-import { SocketContext } from './../src/context/socketContext';
+import { SocketContext } from '../../context/socketContext.js';
 import RoomList from './RoomList';
 import CreateRoom from './CreateRoom';
 import ScoreBoard from './ScoreBoard';
@@ -23,6 +23,7 @@ const tabListNoTitle = [
 const Parameters = () => {
   const [activeTabKey, setActiveTabKey] = useState("jeuxDispo")
   const [roomList, setRoomList] = useState([])
+  const [messages, setMessages] = useState([])
 
   const players = [
     {
@@ -37,6 +38,8 @@ const Parameters = () => {
 
   const socket = useContext(SocketContext)
 
+  
+
   useEffect(() => {
     //console.log("socket [Parameters]", socket)
     const handleGetAllRooms = (data) => {
@@ -45,8 +48,25 @@ const Parameters = () => {
     };
     socket.on("get all rooms", handleGetAllRooms);
 
+    const handleNewMessage = (data) => {
+      console.log(`${data.username} a écrit ${data.message}`)
+      setMessages(prevMessages => [...prevMessages, data.message])
+    }
+
+    socket.on("new message", handleNewMessage)
+
+    const handleLogin = (data) => {
+      const message = "Bienvenue sur le serveur du jeu"
+
+      socket.emit("new message", { username: "I-ROBOT", message })
+      console.log("numUsers", data.numUsers)
+
+    }
+    socket.on("login", handleLogin)
+
     return () => {
       socket.off("get all rooms", handleGetAllRooms);
+      socket.off("login", handleLogin);
     };
   }, [socket])
 
@@ -56,7 +76,7 @@ const Parameters = () => {
 
   const contentListNoTitle = {
     jeuxDispo: <RoomList rooms={roomList} />,
-    creerJeux: <CreateRoom />,
+    creerJeux: <CreateRoom messages={messages} setMessages={setMessages} />,
     tableauScore: <ScoreBoard players={players} />,
   };
 
@@ -64,7 +84,7 @@ const Parameters = () => {
   return (
     <>
       <Card
-        style={{ width: "100%", marginTop: "20px" }}
+        style={{ width: "100%" }}
         tabList={tabListNoTitle}
         activeTabKey={activeTabKey}
         onTabChange={onTab2Change}

@@ -1,6 +1,8 @@
 import { Card, Typography, Button } from "antd";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "@clerk/clerk-react";
+import { useAuth, useUser } from "@clerk/clerk-react";
+import { SocketContext } from "../context/socketContext";
+import { useContext } from "react";
 
 const { Paragraph } = Typography;
 
@@ -19,20 +21,27 @@ const content = (
 export default function IndexPage() {
     const navigate = useNavigate();
     const { isSignedIn } = useAuth();
+    const {user} = useUser()
+    const socket = useContext(SocketContext)
 
     console.log("isSignedIn ", isSignedIn)
+
+    const handleEnter = () => {
+        socket.emit("add user", user.username)
+        navigate("/params")
+    }
 
     return (
         <div className="home-container">
             <Card className="home-card">
                 <Paragraph>
                     <p>Bienvenue sur le jeu de cartes :<br /><span className="title">la Bataille</span></p>
-                    <Paragraph style={{textAlign: "justify"}}>
+                    <Paragraph style={{ textAlign: "justify" }}>
                         {content}
                     </Paragraph>
                 </Paragraph>
                 {
-                    isSignedIn && <Button type="primary" onClick={() => navigate("/params")}>Entrer</Button>
+                    isSignedIn && <Button type="primary" onClick={handleEnter}>Entrer</Button>
                 }
             </Card>
         </div>

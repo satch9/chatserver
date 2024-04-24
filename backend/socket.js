@@ -3,14 +3,14 @@ import { v4 as uuidv4 } from 'uuid'
 
 const initializeSocket = (server) => {
   const io = new Server(server, {
-    /* cors: {
+    cors: {
       origin: 'https://bookish-meme-97xxp76r44gcxq4r-5173.app.github.dev', // Modifier en fonction de votre configuration frontend
       methods: ['GET', 'POST'],
-    }, */
-    cors: {
+    },
+    /* cors: {
       origin: 'http://localhost:5173', // Modifier en fonction de votre configuration frontend
       methods: ['GET', 'POST'],
-    },
+    }, */
   })
 
   let loopLimit = 0
@@ -78,11 +78,12 @@ const initializeSocket = (server) => {
     let addedUser = false
 
     // when the client emits 'new message', this listens and executes
-    socket.on('new message', (data) => {
+    socket.on('new message', ({ username, message }) => {
+      //console.log('username, message [new message]', username, message)
       // we tell the client to execute 'new message'
       socket.broadcast.emit('new message', {
-        username: socket.username,
-        message: data,
+        username: username,
+        message: message,
       })
     })
 
@@ -100,32 +101,6 @@ const initializeSocket = (server) => {
         username: socket.username,
         numUsers,
       })
-    })
-
-    // when the client emits 'typing', we broadcast it to others
-    socket.on('typing', () => {
-      socket.broadcast.emit('typing', { username: socket.username })
-    })
-
-    // when the client emits 'stop typing', we broadcast it to others
-    socket.on('stop typing', () => {
-      socket.broadcast.emit('stop typing', {
-        username: socket.username,
-      })
-    })
-
-    // when the user disconnects.. perform this
-    socket.on('disconnect', function () {
-      if (addedUser) {
-        numUsers--
-        killGame(socket)
-
-        // echo globally that this client has left
-        socket.broadcast.emit('user left', {
-          username: socket.username,
-          numUsers: numUsers,
-        })
-      }
     })
 
     socket.on('joinGame', () => {
@@ -153,6 +128,32 @@ const initializeSocket = (server) => {
         socket.emit('notInGame')
       } else {
         killGame(socket)
+      }
+    })
+
+    // when the client emits 'typing', we broadcast it to others
+    socket.on('typing', () => {
+      socket.broadcast.emit('typing', { username: socket.username })
+    })
+
+    // when the client emits 'stop typing', we broadcast it to others
+    socket.on('stop typing', () => {
+      socket.broadcast.emit('stop typing', {
+        username: socket.username,
+      })
+    })
+
+    // when the user disconnects.. perform this
+    socket.on('disconnect', () => {
+      if (addedUser) {
+        numUsers--
+        killGame(socket)
+
+        // echo globally that this client has left
+        socket.broadcast.emit('user left', {
+          username: socket.username,
+          numUsers: numUsers,
+        })
       }
     })
   })

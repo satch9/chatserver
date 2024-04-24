@@ -1,10 +1,15 @@
-import { useState } from 'react'
+import { useState, useContext } from 'react'
 import { RightCircleTwoTone } from '@ant-design/icons'
 import PropTypes from 'prop-types'
+import { SocketContext } from '../../../context/socketContext'
+import { useUser } from '@clerk/clerk-react'
 
 
 const ChatControl = ({ setMessages, messages }) => {
     const [content, setContent] = useState('')
+    const socket = useContext(SocketContext)
+    const { user } = useUser()
+
 
     const handleChange = (e) => {
         e.preventDefault()
@@ -16,6 +21,7 @@ const ChatControl = ({ setMessages, messages }) => {
         if (content.trim() !== '') {
             setMessages([...messages, content])
             console.log("messages", messages)
+            socket.emit("new message", { username: user.username, message: content })
             setContent('')
         }
     }
@@ -29,7 +35,7 @@ const ChatControl = ({ setMessages, messages }) => {
                     value={content}
                     onChange={handleChange}
                 ></textarea>
-                <RightCircleTwoTone onClick={handleSubmit} twoToneColor="#52c41a" style={{ fontSize: "33px", }} />
+                <RightCircleTwoTone onClick={handleSubmit} twoToneColor="#292C7A" style={{ fontSize: "33px", }} />
             </form>
         </div>
     )
