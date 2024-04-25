@@ -20,24 +20,22 @@ const CreateRoom = () => {
         if (socket) {
             console.log("socket", socket)
 
-            const handleCreatedRoom = (data) => {
+            /* const handleCreatedRoom = (data) => {
                 console.log("data created room", data)
                 //dispatch(gameActions.setCreator(data.room_creator))
                 //dispatch(gameActions.setCreatorName(data.room_creator_name))
                 info(`Salle "${data.room_name}" créée par ${data.room_creator_name} avec un jeu de ${data.room_number_of_cards} cartes`);
-            };
+            }; */
 
             const handleCreatedGame = (data) => {
                 console.log("data created game", data)
                 //dispatch(gameActions.setGameId(data.game_id))
             }
 
-            socket.on("created room", handleCreatedRoom)
             socket.on("created game", handleCreatedGame)
 
             return () => {
-                socket.off("created room", handleCreatedRoom)
-                socket.off("created game", handleCreatedGame)
+                socket.off("created game")
             }
         }
     }, [socket, info])
@@ -49,8 +47,8 @@ const CreateRoom = () => {
 
     const onFinish = () => {
         form.validateFields().then(values => {
-            form.resetFields();
             onCreateRoom(values);
+            form.resetFields();
         }).catch(info => {
             console.log('Validate Failed:', info);
         })

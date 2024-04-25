@@ -1,16 +1,17 @@
 import { Server } from 'socket.io'
 import { v4 as uuidv4 } from 'uuid'
+import Game from './src/models/Game.js'
 
 const initializeSocket = (server) => {
   const io = new Server(server, {
-    /* cors: {
+    cors: {
       origin: 'https://bookish-meme-97xxp76r44gcxq4r-5173.app.github.dev', // Modifier en fonction de votre configuration frontend
       methods: ['GET', 'POST'],
-    }, */
-    cors: {
+    },
+    /* cors: {
       origin: 'http://localhost:5173', // Modifier en fonction de votre configuration frontend
       methods: ['GET', 'POST'],
-    },
+    }, */
   })
 
   let loopLimit = 0
@@ -93,21 +94,27 @@ const initializeSocket = (server) => {
       if (addedUser) return
 
       console.log('add user')
-      console.log('')
-      // we store the username in the socket session for this client
-      socket.username = username
+
       numUsers++
       addedUser = true
       //socket.emit('login', { numUsers, username: socket.username })
       // echo globally (all clients) that a person has connected
       socket.broadcast.emit('user joined', {
-        username: socket.username,
+        username,
         numUsers,
       })
     })
 
-    socket.on('create room', (values)=>{
+    socket.on('create room', async (values) => {
       console.log('Creating a new room...', values)
+      let game = new Game()
+      let gameCreated = await game.buildGame(socket, values)
+
+      console.log('gameCreated', gameCreated)
+      io.emit('created game', {
+        username: values.roomCreator,
+        game: gameCreated,
+      })
     })
 
     socket.on('joinGame', () => {
@@ -118,9 +125,8 @@ const initializeSocket = (server) => {
         const plyr1tmp = gameCollection.gameList[i]['gameObject']['playerOne']
         const plyr2tmp = gameCollection.gameList[i]['gameObject']['playerTwo']
         if (plyr1tmp == socket.username || plyr2tmp == socket.username) {
-          alreadyInGame = trueconsole.log(
-            `${socket.username} already has a Game!`,
-          )
+          alreadyInGame = true
+          console.log(`${socket.username} already has a Game!`)
 
           socket.emit('alreadyJoined', {
             gameId: gameCollection.gameList[i]['gameObject']['id'],
