@@ -1,7 +1,9 @@
 import { Form, Input, Select, Button, message } from "antd"
 import { useCallback, useEffect, useContext } from 'react'
 import { useUser } from '@clerk/clerk-react'
-import { SocketContext } from '../../context/socketContext.js';
+import { SocketContext } from '../../context/socketContext.js'
+import { useDispatch } from 'react-redux'
+import { actions as gameActions } from "../../redux/reducers/gameReducer.js"
 //import { useChat } from "../../hooks/useChat.js";
 
 
@@ -9,6 +11,7 @@ const CreateRoom = () => {
     const [form] = Form.useForm()
     const [messageApi, contextHolder] = message.useMessage()
     const { user } = useUser()
+    const dispatch = useDispatch()
     const socket = useContext(SocketContext)
     //const { messages, setMessages } = useChat()
 
@@ -20,16 +23,14 @@ const CreateRoom = () => {
         if (socket) {
             console.log("socket", socket)
 
-            /* const handleCreatedRoom = (data) => {
-                console.log("data created room", data)
-                //dispatch(gameActions.setCreator(data.room_creator))
-                //dispatch(gameActions.setCreatorName(data.room_creator_name))
-                info(`Salle "${data.room_name}" créée par ${data.room_creator_name} avec un jeu de ${data.room_number_of_cards} cartes`);
-            }; */
-
             const handleCreatedGame = (data) => {
                 console.log("data created game", data)
-                //dispatch(gameActions.setGameId(data.game_id))
+                info(`"${data.roomName}" créée par ${data.roomCreatorName} avec un jeu de ${data.roomNumOfCards} cartes`)
+                dispatch(gameActions.setGameId(data.gameId))
+                dispatch(gameActions.setRoomId(data.roomId))
+                dispatch(gameActions.setRoomName(data.roomName))
+                dispatch(gameActions.setCreator(data.roomCreator))
+                dispatch(gameActions.setCreatorName(data.roomCreatorName))
             }
 
             socket.on("created game", handleCreatedGame)
@@ -38,7 +39,7 @@ const CreateRoom = () => {
                 socket.off("created game")
             }
         }
-    }, [socket, info])
+    }, [socket, info, dispatch])
 
     const onCreateRoom = (values) => {
         console.log("values [createRoom]", values);

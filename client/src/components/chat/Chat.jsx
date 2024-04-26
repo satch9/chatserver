@@ -13,21 +13,8 @@ const Chat = () => {
 
     const { isSignedIn } = useAuth()
     //const socket = useContext(SocketContext)
-     const { messages } = useChat()
-/*
-    useEffect(() => {
+    const { messages } = useChat()
 
-        const handleNewMessage = (data) => {
-            console.log(`${data.username} a écrit ${data.message}`)
-            addMessage(data)
-        }
-
-        socket.on("new message", handleNewMessage)
-
-        return () => {
-            socket.off("new message", handleNewMessage)
-        }
-    }, [socket, addMessage]) */
 
     return (
         <>

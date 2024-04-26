@@ -8,6 +8,7 @@ export const ChatProvider = (props) => {
   const [messages, setMessages] = useState([])
 
   const addMessage = (data) => {
+    console.log(`${data.username} a écrit ${data.message}`)
     setMessages(prevMessages => [...prevMessages, data.message])
   }
 

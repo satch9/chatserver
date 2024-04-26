@@ -48,12 +48,10 @@ const Parameters = () => {
     };
     socket.on("get all rooms", handleGetAllRooms);
 
-    const handleNewMessage = (data) => {
-      console.log(`${data.username} a écrit ${data.message}`)
-      addMessage(data)
-    }
 
-    socket.on("new message", handleNewMessage)
+    socket.on("new message", (data) => {
+      addMessage(data)
+    })
 
     const handleUserJoined = (data) => {
       const message = `Bienvenu à ${data.username} sur le serveur du jeu`
@@ -67,7 +65,7 @@ const Parameters = () => {
     return () => {
       socket.off("get all rooms", handleGetAllRooms);
       socket.off("user joined", handleUserJoined);
-      socket.off("new message", handleNewMessage)
+      socket.off("new message")
     };
   }, [addMessage, socket])
 

@@ -4,7 +4,6 @@ import { sequelize } from '../database/db.js'
 
 class Game {
   constructor() {
-    this.totalGameCount = 0
     this.game_id = null
     this.game_room_id = null
     this.game_current_player = null
@@ -26,10 +25,7 @@ class Game {
     )
 
     console.log('room [buildGame]', room)
-
     await this.createGameToDB(room.room_id)
-    this.totalGameCount++
-
     console.log(`Game created by ${values.roomCreator} `)
 
     return {
@@ -44,7 +40,7 @@ class Game {
       roomName: room.room_name,
       roomCreator: room.room_creator,
       roomCreatorName: room.room_creator_name,
-      roomNumofcards: room.room_number_of_cards,
+      roomNumOfcards: room.room_number_of_cards,
     }
   }
 
@@ -78,6 +74,8 @@ class Game {
       { where: { game_id: this.game_id } },
     )
   }
+
+  
 }
 
 export default Game

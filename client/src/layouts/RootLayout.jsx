@@ -1,12 +1,12 @@
 import { Link, Outlet, useNavigate } from 'react-router-dom'
 import { ClerkProvider, SignedIn, SignedOut, UserButton, SignInButton } from '@clerk/clerk-react'
 
-import { Layout } from 'antd'
+import { Layout, Col, Row } from 'antd'
 import Chat from '../components/chat/Chat'
 
 
 
-const { Header, Content, Footer, Sider } = Layout
+const { Header, Content, Footer } = Layout
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
 
@@ -19,7 +19,7 @@ export default function RootLayout() {
 
     return (
         <ClerkProvider navigate={navigate} publishableKey={PUBLISHABLE_KEY}>
-            <Layout>
+            <Layout >
                 <Header className="header">
                     <Link to="/"><div style={{ color: "white" }}>La Bataille</div></Link>
                     <SignedIn >
@@ -32,18 +32,22 @@ export default function RootLayout() {
                     </SignedOut>
                 </Header>
 
-                <Content style={{ padding: '20px 50px', width: '800px' }}>
-                    <Layout style={{ justifyContent: 'space-between', gap: '10px' }}>
-                        <main>
-                            <Outlet />
-                        </main>
-                        <Sider width="45%" >
-                            
-                                <Chat />
-                            
+                <Content style={{ padding: '20px 50px', width: '800px', }}>
+                    <Row style={{ gap: '25px' }}>
+                        <Col xs={{ flex: '100%' }} sm={{ flex: '50%', }} md={{ flex: '45%', }} lg={{ flex: '45%', }} xl={{ flex: '45%', }} >
 
-                        </Sider>
-                    </Layout>
+                            <main>
+                                <Outlet />
+                            </main>
+
+                        </Col>
+
+                        <Col xs={{ flex: '100%' }} sm={{ flex: '50%', }} md={{ flex: '45%', }} lg={{ flex: '45%', }} xl={{ flex: '45%', }}>
+
+                            <Chat />
+
+                        </Col>
+                    </Row>
                 </Content>
 
                 <Footer style={{ textAlign: 'center' }}>Bataille - React AntD Socket.IO</Footer>

@@ -1,6 +1,8 @@
 import { Server } from 'socket.io'
 import { v4 as uuidv4 } from 'uuid'
+import GameCollection from './src/models/GameCollection.js'
 import Game from './src/models/Game.js'
+import Room from './src/models/Room.js'
 
 const initializeSocket = (server) => {
   const io = new Server(server, {
@@ -14,7 +16,7 @@ const initializeSocket = (server) => {
     }, */
   })
 
-  let loopLimit = 0
+  /* let loopLimit = 0
 
   let gameCollection = {
     totalGameCount: 0,
@@ -68,11 +70,14 @@ const initializeSocket = (server) => {
     } else {
       console.log('gameSeeker else')
     }
-  }
+  } */
 
   // chatRoom
 
   let numUsers = 0
+  const INTERVAL_TIME = 5000
+
+  let gameCollection = new GameCollection()
 
   io.on('connection', (socket) => {
     console.log(`User connected with socketId ${socket.id}`)
@@ -105,14 +110,32 @@ const initializeSocket = (server) => {
       })
     })
 
+    setInterval(async () => {
+      try {
+        Room.getRooms((err, rooms) => {
+          if (err) {
+            console.error(
+              `Erreur lors de la récupération de toutes les salles :`,
+              err,
+            )
+            return
+          }
+          //console.log("All rooms:", JSON.stringify(rooms, null, 2))
+          io.emit('get all rooms', rooms)
+        })
+      } catch (error) {
+        console.log(error)
+      }
+    }, INTERVAL_TIME)
+
     socket.on('create room', async (values) => {
       console.log('Creating a new room...', values)
       let game = new Game()
+      gameCollection.addGame(game)
       let gameCreated = await game.buildGame(socket, values)
 
       console.log('gameCreated', gameCreated)
       io.emit('created game', {
-        username: values.roomCreator,
         game: gameCreated,
       })
     })
